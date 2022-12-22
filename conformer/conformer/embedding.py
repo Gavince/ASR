@@ -30,7 +30,9 @@ class PositionalEncoding(nn.Module):
     """
     def __init__(self, d_model: int = 512, max_len: int = 10000) -> None:
         super(PositionalEncoding, self).__init__()
+        # 位置编码不需要进行求导
         pe = torch.zeros(max_len, d_model, requires_grad=False)
+        # position_shape: [max_len, 1]
         position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
         div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model))
         pe[:, 0::2] = torch.sin(position * div_term)

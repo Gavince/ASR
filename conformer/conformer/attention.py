@@ -83,8 +83,10 @@ class RelativeMultiHeadAttention(nn.Module):
         key = self.key_proj(key).view(batch_size, -1, self.num_heads, self.d_head).permute(0, 2, 1, 3)
         value = self.value_proj(value).view(batch_size, -1, self.num_heads, self.d_head).permute(0, 2, 1, 3)
         pos_embedding = self.pos_proj(pos_embedding).view(batch_size, -1, self.num_heads, self.d_head)
-
+        # TODO:如何计算多头注意力
+        # 计算公式中a、c项
         content_score = torch.matmul((query + self.u_bias).transpose(1, 2), key.transpose(2, 3))
+        # 计算公式中b、d项
         pos_score = torch.matmul((query + self.v_bias).transpose(1, 2), pos_embedding.permute(0, 2, 3, 1))
         pos_score = self._relative_shift(pos_score)
 
