@@ -356,6 +356,7 @@ def tokenize(data,
         Returns:
             Iterable[{key, wav, txt, tokens, label, sample_rate}]
     """
+    # TODO： 检查是否在前面对特殊字符进行了标识
     if non_lang_syms is not None:
         non_lang_syms_pattern = re.compile(r"(\[[^\[\]]+\]|<[^<>]+>|{[^{}]+})")
     else:
@@ -393,7 +394,8 @@ def tokenize(data,
                         if ch == ' ':
                             ch = "▁"
                         tokens.append(ch)
-
+                        
+        # 不在词表中的字符用"<unk>"代替
         for ch in tokens:
             if ch in symbol_table:
                 label.append(symbol_table[ch])
@@ -617,7 +619,9 @@ def padding(data):
             Iterable[Tuple(keys, feats, labels, feats lengths, label lengths)]
     """
     for sample in data:
+        # sample为batch后的数据 
         assert isinstance(sample, list)
+        # 按照时间时间顺序进行，维度为:T
         feats_length = torch.tensor([x['feat'].size(0) for x in sample],
                                     dtype=torch.int32)
         order = torch.argsort(feats_length, descending=True)
@@ -630,7 +634,7 @@ def padding(data):
         ]
         label_lengths = torch.tensor([x.size(0) for x in sorted_labels],
                                      dtype=torch.int32)
-
+        # TODO:为什么数据是变长的对齐方式
         padded_feats = pad_sequence(sorted_feats,
                                     batch_first=True,
                                     padding_value=0)

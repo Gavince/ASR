@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Shigeki Karita
+            # Copyright (c) 2019 Shigeki Karita
 #               2020 Mobvoi Inc (Binbin Zhang)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,15 +81,19 @@ class LabelSmoothingLoss(nn.Module):
         """
         assert x.size(2) == self.size
         batch_size = x.size(0)
+        # [B*S, C]
         x = x.view(-1, self.size)
         target = target.view(-1)
         # use zeros_like instead of torch.no_grad() for true_dist,
         # since no_grad() can not be exported by JIT
+        # [B*T, C]
         true_dist = torch.zeros_like(x)
+        # 对除真实类以外的其它类使用随机噪声替代
         true_dist.fill_(self.smoothing / (self.size - 1))
-        ignore = target == self.padding_idx  # (B,)
+        ignore = target == self.padding_idx  # (B*L,)
         total = len(target) - ignore.sum().item()
         target = target.masked_fill(ignore, 0)  # avoid -1 index
+        # target表示真实预测的标签值，此处操作等于给其它类添加噪声
         true_dist.scatter_(1, target.unsqueeze(1), self.confidence)
         kl = self.criterion(torch.log_softmax(x, dim=1), true_dist)
         denom = total if self.normalize_length else batch_size

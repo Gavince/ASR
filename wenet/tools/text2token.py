@@ -110,6 +110,7 @@ def main():
     line = f.readline()
     n = args.nchar
     while line:
+        print("line", line)
         x = line.split()
         print(' '.join(x[:args.skip_ncols]), end=" ")
         a = ' '.join(x[args.skip_ncols:])
@@ -143,6 +144,7 @@ def main():
             a = a.split(" ")
         elif args.trans_type == "cn_char_en_bpe":
             b = seg_char(a)
+            print("b:", b)
             a = []
             for j in b:
                 # we use "▁" to instead of blanks among english words
@@ -159,7 +161,7 @@ def main():
         a_flat = []
         for z in a:
             a_flat.append("".join(z))
-
+        print(f"{a_flat}   {a}")
         a_chars = [z.replace(' ', args.space) for z in a_flat]
         if (args.trans_type == "phn"):
             a_chars = [z.replace("sil", args.space) for z in a_chars]

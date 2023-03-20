@@ -155,7 +155,7 @@ def Dataset(data_type,
     speed_perturb = conf.get('speed_perturb', False)
     if speed_perturb:
         dataset = Processor(dataset, processor.speed_perturb)
-
+    # 获取音频特征
     feats_type = conf.get('feats_type', 'fbank')
     assert feats_type in ['fbank', 'mfcc']
     if feats_type == 'fbank':

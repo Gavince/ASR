@@ -5,7 +5,10 @@ __pycache__/
 
 # C extensions
 *.so
+# data
 
+./wenet/examples/aishell/s0/data
+./wenet/examples/aishell/s0/exp/conformer
 # Distribution / packaging
 .Python
 build/

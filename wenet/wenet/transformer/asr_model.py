@@ -128,6 +128,7 @@ class ASRModel(torch.nn.Module):
         ys_pad: torch.Tensor,
         ys_pad_lens: torch.Tensor,
     ) -> Tuple[torch.Tensor, float]:
+        # 文本加入起始符号和终止符号
         ys_in_pad, ys_out_pad = add_sos_eos(ys_pad, self.sos, self.eos,
                                             self.ignore_id)
         ys_in_lens = ys_pad_lens + 1
@@ -232,6 +233,7 @@ class ASRModel(torch.nn.Module):
                               dtype=torch.float)
         scores = scores.to(device).repeat([batch_size]).unsqueeze(1).to(
             device)  # (B*N, 1)
+        # end_flag: [B*N, 1 ]
         end_flag = torch.zeros_like(scores, dtype=torch.bool, device=device)
         cache: Optional[List[torch.Tensor]] = None
         # 2. Decoder forward step by step

@@ -146,6 +146,7 @@ def main():
     symbol_table = read_symbol_table(args.symbol_table)
 
     train_conf = configs['dataset_conf']
+    # 交叉验证的配置文件不需要进行数据增强
     cv_conf = copy.deepcopy(train_conf)
     cv_conf['speed_perturb'] = False
     cv_conf['spec_aug'] = False
